@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_ng_template">
+    <sp_ng_template action="INSERT_OR_UPDATE">
+        <id>appt-walkUpOnbehalfAppointmentPanel</id>
+        <sp_widget display_value="Online Appointment Scheduler Experience">f151899c0725101035cab0027cd30004</sp_widget>
+        <sys_class_name>sp_ng_template</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-20 00:55:43</sys_created_on>
+        <sys_id>77661c450761101035cab0027cd30071</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>appt-walkUpOnbehalfAppointmentPanel</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sp_ng_template_77661c450761101035cab0027cd30071</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-06-26 01:49:15</sys_updated_on>
+        <template><![CDATA[<div>
+    <div class="wu_header">
+        <p class="onBehalfReason-msg" ng-if="!c.hasAppointment">{{c.reasonMsg}}</p>
+        <p class="onBehalfReason-msg" ng-if="c.hasAppointment">{{c.rescheduleMsg}}</p>
+    </div>
+    <!-- Child element of directive -->
+    <div ng-transclude="reasonSelect" ng-if="!c.hasAppointment"></div>
+    <br> <!-- Select appointment widget -->
+    <div ng-if="!c.hasAppointment">
+        <div id="appt-select-widget" class="appointment-wrapper">
+            <sp-widget widget="c.appointmentSelect"></sp-widget>
+        </div>
+        <br />
+    </div> <!-- Reselect appointment widget -->
+    <div id="appt-reselect-widget" ng-if="c.hasAppointment">
+        <sp-widget widget="c.appointmentReselect"></sp-widget> <!-- Child element of directive -->
+        <div class="reason-text" ng-transclude="reasonText"></div>
+    </div>
+    <div ng-if="!c.hasAppointment" class="wu-submit">
+        <button ng-aria-label="{{c.buttonMsg}}" type="button" class="btn btn-primary appt-btn"
+                ng-click="c.submitAppointment()" ng-disabled="c.isDisabled()"> {{c.buttonMsg}}
+        </button>
+    </div>
+</div>]]></template>
+    </sp_ng_template>
+</record_update>

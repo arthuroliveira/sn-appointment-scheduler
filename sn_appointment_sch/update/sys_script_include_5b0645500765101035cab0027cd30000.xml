@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>sn_appointment_sch.AppointmentSchedulerConstants</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>AppointmentSchedulerConstants</name>
+        <script><![CDATA[var AppointmentSchedulerConstants = Class.create();
+AppointmentSchedulerConstants.prototype = {
+    initialize: function() {
+    },
+
+    type: 'AppointmentSchedulerConstants'
+};
+
+
+// Constants
+AppointmentSchedulerConstants.MAX_APPT_PER_LOCATION = 1;
+AppointmentSchedulerConstants.APPTMNT_LEAD_TIME = 15;
+AppointmentSchedulerConstants.QUEUE_HEAD_LENGTH = 4;
+AppointmentSchedulerConstants.QUEUE_TAIL_LENGTH = 2;
+AppointmentSchedulerConstants.WALKUP_CHANNEL = "e3c2a22eb3b203002186a72256a8dc71";
+AppointmentSchedulerConstants.WAITING = "waiting";
+AppointmentSchedulerConstants.RENDER_WIDGET = "service_portal_payload";
+AppointmentSchedulerConstants.WALKUP_TYPE = 'walkup';
+
+//Table Names
+AppointmentSchedulerConstants.INTERACTION_TABLE = "interaction";
+AppointmentSchedulerConstants.LOCATION_QUEUE_TABLE = "wu_location_queue";
+AppointmentSchedulerConstants.APPOINTMENT_TABLE = "wu_appointment";
+AppointmentSchedulerConstants.CONTEXT_TABLE = "wu_context";
+AppointmentSchedulerConstants.REASON_TABLE = "wu_reason";
+AppointmentSchedulerConstants.REASON_M2M_TABLE = "wu_m2m_location_queue_reason";
+AppointmentSchedulerConstants.ATTACHMENT_TABLE = 'sys_attachment';
+AppointmentSchedulerConstants.USER_TABLE = "sys_user";
+AppointmentSchedulerConstants.WU_IXN_CTX_TABLE = "sn_walkup_interaction_wu_context";
+AppointmentSchedulerConstants.WU_APPTMNT_IXN_TABLE = "sn_walkup_appointment_interaction";
+AppointmentSchedulerConstants.BADGE_READER_LOCATION_QUEUE_TABLE = "wu_m2m_badge_reader_location_queue";
+
+//States
+// interaction
+AppointmentSchedulerConstants.INTERACTION_STATES = {};
+AppointmentSchedulerConstants.INTERACTION_STATES.NEW = "new";
+AppointmentSchedulerConstants.INTERACTION_STATES.ON_HOLD = "on_hold";
+AppointmentSchedulerConstants.INTERACTION_STATES.WIP = "work_in_progress";
+AppointmentSchedulerConstants.INTERACTION_STATES.CLOSED_COMPLETE = "closed_complete";
+AppointmentSchedulerConstants.INTERACTION_STATES.CLOSED_ABANDONED = "closed_abandoned";
+
+// wu_appointment
+AppointmentSchedulerConstants.APPOINTMENT_STATES = {};
+AppointmentSchedulerConstants.APPOINTMENT_STATES.DRAFT = "1";
+AppointmentSchedulerConstants.APPOINTMENT_STATES.READY = "10";
+AppointmentSchedulerConstants.APPOINTMENT_STATES.ASSIGNED = "16";
+AppointmentSchedulerConstants.APPOINTMENT_STATES.ACCEPTED = "17";
+AppointmentSchedulerConstants.APPOINTMENT_STATES.WIP = "18";
+AppointmentSchedulerConstants.APPOINTMENT_STATES.CLOSED_COMPLETE = "3";
+AppointmentSchedulerConstants.APPOINTMENT_STATES.CLOSED_INCOMPLETE = "4";
+AppointmentSchedulerConstants.APPOINTMENT_STATES.CANCELLED = "7";
+
+// Field Names
+AppointmentSchedulerConstants.FIELD_WA_ACTIVE = 'wa_active';
+AppointmentSchedulerConstants.FIELD_WA_LOCATION = 'wa_wu_location_queue';
+AppointmentSchedulerConstants.FIELD_IXN_STATE = 'i_state';
+AppointmentSchedulerConstants.FIELD_WA_START = 'wa_window_start';
+AppointmentSchedulerConstants.FIELD_WA_CONTACT = 'wa_contact';
+AppointmentSchedulerConstants.FIELD_IXN_ASSIGNED = 'i_assigned_to';
+
+// Queue
+AppointmentSchedulerConstants.QUEUE_PARTITIONED = 'partitioned';
+AppointmentSchedulerConstants.QUEUE_ALL = 'all';
+AppointmentSchedulerConstants.FIELDS = {};
+AppointmentSchedulerConstants.FIELDS.CMN_LOCATION = "cmn_location";
+
+// Name Configs
+AppointmentSchedulerConstants.NAME_CONFIG = {};
+AppointmentSchedulerConstants.NAME_CONFIG.FIRST_NAME = 'show_first_name_only';
+AppointmentSchedulerConstants.NAME_CONFIG.LAST_NAME_INITIAL = 'show_last_name_initial';
+
+// Reasons
+AppointmentSchedulerConstants.REASON_OTHER = '9f5921773b2013001d132c2b54efc4e6';
+AppointmentSchedulerConstants.REASON_NEED_SOMETHING = '67758467b30303002186a72256a8dce5';
+AppointmentSchedulerConstants.REASON_SOMETHING_NOT_WORKING = '9f658467b30303002186a72256a8dcfc';]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-17 20:28:56</sys_created_on>
+        <sys_id>5b0645500765101035cab0027cd30000</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>AppointmentSchedulerConstants</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sys_script_include_5b0645500765101035cab0027cd30000</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-06-17 20:30:20</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_script">
+    <sys_ui_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <description/>
+        <global>false</global>
+        <name>sn_appointment_sch.ApptSchedulerUI</name>
+        <script><![CDATA[angular.module('AppointmentSchedulerUI', [])
+    .service('walkUpModall', function ($uibModal) {
+        var modalInstance, leaveModalInstance;
+
+        // Display the modal to the user when they reach threshold value in the queue.
+        function renderThresholdModal($scope, threshold, template) {
+            modalInstance = $uibModal.open({
+                templateUrl: template,
+                scope: $scope,
+                controller: function ($scope, $uibModalInstance, i18n) {
+
+                    i18n.getMessage('You are #{0} in line and will be assisted soon.', function (msg) {
+                        $scope.headerMessage = msg.withValues([threshold]);
+                    });
+
+                    i18n.getMessage('Please head over to the walk-up location if you are not already there.', function (msg) {
+                        $scope.modalMessage = msg;
+                    });
+
+                    $scope.closeModal = function () {
+                        $uibModalInstance.close();
+                    };
+                }
+            });
+        }
+
+        //Display the modal when user wants to leave the queue or is already present in some other queue.
+        function renderLeaveQueue($scope, header, msg, agreeBtn, cancelBtn, clear, confirmCallback, template) {
+            leaveModalInstance = $uibModal.open({
+                templateUrl: template,
+                scope: $scope,
+                controller: function ($scope, $uibModalInstance) {
+                    $scope.headerMessage = header;
+                    $scope.modalMessage = msg;
+                    $scope.agreeBtn = agreeBtn;
+                    $scope.cancelBtn = cancelBtn;
+                    $scope.dismissModal = function () {
+                        $uibModalInstance.close();
+                        clear();
+                    };
+                    $scope.confirmChange = function () {
+                        confirmCallback();
+                        $uibModalInstance.close();
+                    };
+                }
+            });
+        }
+
+        return {
+            thresholdModal: renderThresholdModal,
+            promptModal: renderLeaveQueue
+        }
+    })
+
+    .directive('walkUpAppointment', function () {
+        return {
+            scope: {
+                appointmentSelect: '=',
+                appointmentReselect: '=',
+                isReasonSelected: '=',
+                headerMsg: '=',
+                reasonMsg: '=',
+                rescheduleMsg: '=',
+                buttonMsg: '=',
+                createAppointment: '&'
+            },
+            controllerAs: 'c',
+            bindToController: true,
+            templateUrl: 'appt-walkUpOnbehalfAppointmentPanel',
+            transclude: {
+                'reasonText': '?reasonText',
+                'reasonSelect': '?reasonForVisitSelect'
+            },
+            controller: function ($scope) {
+                var c = this;
+                c.hasAppointment = false;
+
+                // Utility function to check for defined or null
+                c.isUndefinedOrNull = function (val) {
+                    return angular.isUndefined(val) || val === null;
+                }
+
+                // Listen for when the user selects an appointment time
+                $scope.$on('appt.booking.date.selected', function (event, selectedDate) {
+                    if (!c.isUndefinedOrNull(selectedDate)) {
+                        try {
+                            var data = JSON.parse(selectedDate.data);
+                            c.selectedWindow = c.isUndefinedOrNull(data) ? data : data.selectedWindow;
+                        } catch (e) {
+                            c.selectedWindow = null;
+                        }
+                    }
+                    c.selectedDate = selectedDate.data;
+                });
+
+                // Watch for when the state of the appointment reselect widget changes
+                $scope.$watch(function () {
+                    return c.appointmentReselect
+                }, function (newValue, oldValue, scope) {
+                    if (newValue !== oldValue) {
+                        initializeReselectState(newValue);
+                    }
+                }, true);
+
+                // Makes a call to the REST endpoint to create an appointment
+                c.submitAppointment = function () {
+                    if (!c.selectedDate)
+                        return false;
+                    // Call the create appointment function passed in from the parent controller
+                    c.createAppointment({
+                        snAppointment: c.selectedDate,
+                        callback: function (success) {
+                            // Reset state upon successful appointment creation
+                            if (success)
+                                c.selectedDate = undefined;
+                        }
+                    });
+                };
+
+                // Determine if the submit button is disabled
+                c.isDisabled = function () {
+                    if (c.isUndefinedOrNull(c.selectedWindow) || !c.isReasonSelected || c.isUndefinedOrNull(c.selectedDate))
+                        return true;
+                    return false;
+                }
+
+                initializeReselectState(c.appointmentReselect);
+
+                /**
+                 * Determine whether or not to render the re-select widget
+                 */
+                function initializeReselectState(value) {
+                    c.appointmentReselect = value;
+
+                    if (!c.isUndefinedOrNull(value))
+                        c.hasAppointment = value.data.hasAppointment;
+                }
+            }
+        };
+
+    })
+    .directive('walkUpOnbehalfAppointment', function () {
+        return {
+            scope: {
+                appointmentSelect: '=',
+                appointmentReselect: '=',
+                isReasonSelected: '=',
+                isUserSelected: '=',
+                headerMsg: '=',
+                reasonMsg: '=',
+                rescheduleMsg: '=',
+                buttonMsg: '=',
+                createAppointment: '&'
+            },
+            controllerAs: 'c',
+            bindToController: true,
+            templateUrl: 'appt-walkUpOnbehalfAppointmentPanel',
+            transclude: {
+                'reasonText': '?reasonText',
+                'reasonSelect': '?reasonForVisitSelect'
+            },
+            controller: function ($scope) {
+                var c = this;
+                c.hasAppointment = false;
+
+                // Utility function to check for defined or null
+                c.isUndefinedOrNull = function (val) {
+                    return angular.isUndefined(val) || val === null;
+                }
+
+                // Listen for when the user selects an appointment time
+                $scope.$on('appt.booking.date.selected', function (event, selectedDate) {
+                    if (!c.isUndefinedOrNull(selectedDate)) {
+                        try {
+                            var data = JSON.parse(selectedDate.data);
+                            c.selectedWindow = c.isUndefinedOrNull(data) ? data : data.selectedWindow;
+                        } catch (e) {
+                            c.selectedWindow = null;
+                        }
+                    }
+                    c.selectedDate = selectedDate.data;
+                });
+
+                // Watch for when the state of the appointment reselect widget changes
+                $scope.$watch(function () {
+                    return c.appointmentReselect
+                }, function (newValue, oldValue, scope) {
+                    if (newValue !== oldValue) {
+                        initializeReselectState(newValue);
+                    }
+                }, true);
+
+                // Makes a call to the REST endpoint to create an appointment
+                c.submitAppointment = function () {
+                    if (!c.selectedDate)
+                        return false;
+                    // Call the create appointment function passed in from the parent controller
+                    c.createAppointment({
+                        snAppointment: c.selectedDate,
+                        callback: function (success) {
+                            // Reset state upon successful appointment creation
+                            if (success)
+                                c.selectedDate = undefined;
+                        }
+                    });
+                };
+
+                // Determine if the submit button is disabled
+                c.isDisabled = function () {
+                    if (c.isUndefinedOrNull(c.selectedWindow) || !c.isUserSelected || c.isUndefinedOrNull(c.selectedDate) || !c.isReasonSelected)
+                        return true;
+                    return false;
+                }
+
+                initializeReselectState(c.appointmentReselect);
+
+                /**
+                 * Determine whether or not to render the re-select widget
+                 */
+                function initializeReselectState(value) {
+                    c.appointmentReselect = value;
+                    if (!c.isUndefinedOrNull(value)) {
+                        c.hasAppointment = value.data.hasAppointment;
+                    } else {
+                        c.hasAppointment = false;
+                    }
+                }
+            }
+        };
+    })
+    .directive('reasonForVisitSelect', function () {
+        return {
+            scope: {
+                issueChoices: '=',
+                placeholder: '=',
+                isReasonSelected: '=',
+                selectReason: '&',
+                getSearchResults: '&'
+            },
+            controllerAs: 'c',
+            bindToController: true,
+            templateUrl: 'appt-reasonForVisitSelect',
+            controller: function ($scope, $anchorScroll, $timeout) {
+                var c = this;
+                c.textAreaTimeout = null;
+
+                /**
+                 * Cancel the text area timeout if currently active
+                 */
+                c.cancelTimeout = function () {
+                    if (c.textAreaTimeout) {
+                        $timeout.cancel(c.textAreaTimeout);
+                    }
+                }
+
+                /**
+                 * Add a timeout for getting contextual search results. Will wait 800 ms before
+                 * fetching search results.
+                 *
+                 * @param {string} value to search against the contextual search
+                 */
+                c.ctxSearchTimeout = function (value) {
+                    c.textAreaTimeout = c.getSearchResults({
+                        searchText: value
+                    });
+                }
+
+                /**
+                 * Handler for user input on the text area
+                 *
+                 * @param {string} value that was entered in the text area
+                 */
+                c.onTextAreaKeyPress = function (value) {
+                    if (c.textAreaTimeout) {
+                        c.cancelTimeout();
+                    }
+                    c.ctxSearchTimeout(value);
+                }
+
+                /**
+                 * Execute a function in a timeout
+                 */
+                c.timeout = function (callback) {
+                    $timeout(callback, 0);
+                }
+
+                /**
+                 * Generate unique element ID. For the case when this directive
+                 * is embedded multiple times in a controller.
+                 */
+                c.generateUniqueID = function (id) {
+                    var uID = id + '_' + $scope.$id;
+                    return uID;
+                }
+            },
+            link: function (scope, element, attrs, c) {
+                c.selectedIssue = '';
+                c.otherIssue = '';
+                /**
+                 * Handler for the reason for visit drop down. Automatically focus on the short description text area
+                 * when the other selection is selected
+                 *
+                 * @param {string} selectedOptionId - sys_id of the selected reason for visit
+                 * @param {string} elementId - the HTML ID of the text area associated with the reasons for visit
+                 */
+                c.onSelectingIssue = function (selectedOptionId, elementId) {
+                    var reason;
+                    // Clear old results first
+                    c.showTextArea = false;
+                    c.resultsFound = false;
+
+                    for (var i = 0; i < c.issueChoices.length; i++) {
+                        if (c.issueChoices[i].value === selectedOptionId) {
+                            c.showTextArea = c.issueChoices[i].display_text_area;
+                            reason = c.issueChoices[i];
+                            break;
+                        }
+                    }
+
+                    // Set the reason state in the parent controller
+                    c.selectReason({
+                        reason: reason
+                    });
+
+                    // Get empty search results
+                    if (angular.isUndefined(reason) || reason === null || reason.display_text_area === true) {
+                        c.getSearchResults({
+                            searchText: ''
+                        });
+                    }
+                    // Get contextual search results for the reason for visit label
+                    else if (reason.display_text_area === false) {
+                        c.getSearchResults({
+                            searchText: reason.label
+                        });
+                    }
+
+                    // Focus on the text area when a reason for visit has a text area
+                    if (c.showTextArea)
+                        focusOnElement(elementId);
+
+                    document.activeElement.blur();
+                };
+
+                /**
+                 * Set focus on the passed in HTML element
+                 */
+                function focusOnElement(elementId) {
+                    var element = document.getElementById(elementId);
+                    c.timeout(function () {
+                        if (element)
+                            element.focus();
+                    });
+                }
+            }
+        };
+    })]]></script>
+        <script_name>ApptSchedulerUI</script_name>
+        <sys_class_name>sys_ui_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-19 23:39:57</sys_created_on>
+        <sys_id>cb05c44d0721101035cab0027cd3005d</sys_id>
+        <sys_mod_count>29</sys_mod_count>
+        <sys_name>sn_appointment_sch.ApptSchedulerUI</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sys_ui_script_cb05c44d0721101035cab0027cd3005d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-06-20 01:05:30</sys_updated_on>
+        <ui_type>10</ui_type>
+        <use_scoped_format>false</use_scoped_format>
+    </sys_ui_script>
+</record_update>

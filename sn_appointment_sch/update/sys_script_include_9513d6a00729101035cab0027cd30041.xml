@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>sn_appointment_sch.WalkUpUtil</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Implements extension point sn_walkup.WalkUpUtil
+Allow for extension to WalkUpUtil script include.</description>
+        <name>WalkUpUtil</name>
+        <script><![CDATA[var WalkUpUtil = Class.create();
+WalkUpUtil.prototype = {
+	initialize: function() {
+	},
+
+	/**
+	 * Ensure that the user only has the walkup_login
+	 * and no other roles. If user has any roles other
+	 * than walkup_login or snc_internal, then the are not
+	 * authorized
+	 *
+	 * @param user a ScopedUser
+	 */
+	isAuthorized: function(user) {
+		return 'test';
+		var WALKUP_LOGIN = 'sn_walkup.walkup_login';
+		var SNC_INTERNAL = 'snc_internal'; // used when explicit_roles plugin is active
+
+		if (!user || typeof user !== 'object')
+			return false;
+
+		if (!user.hasRole(WALKUP_LOGIN))
+			return false;
+
+		var roles = user.getRoles();
+		for (var i = 0; i < roles.length; i++)
+			if (roles[i] !== SNC_INTERNAL && roles[i] !== WALKUP_LOGIN)
+				return false;
+
+		return true;
+	},
+
+	/*Fetch queue id, given the location for the queue*/
+	getQueueFromLocation : function(locationId) {
+		var queueGr = new GlideRecord('wu_location_queue');
+		queueGr.addQuery('location', locationId);
+		queueGr.query();
+		while (queueGr.next()) {
+			return queueGr.sys_id;
+		}	
+	},
+
+	/*Fetch queue name given the queue id*/
+	getQueueName: function(queueId) {
+		var queueName = '';
+		var queueGR = new GlideRecord('wu_location_queue');
+		queueGR.addActiveQuery();
+		queueGR.addQuery('sys_id',queueId);
+		queueGR.query();
+		while(queueGR.next()) {
+			queueName = queueGR.getValue('name');
+		}
+		return queueName;	
+	},
+
+	/**
+	 * get the appointment portal link
+	 *
+	 * @param appointmentBookingGR Glide Record of the appointment booking record
+	 * @return The appointment portal link string or FALSE
+	 */
+	getAppointmentPortalLink: function(appointmentBookingGR) {
+
+		if (!appointmentBookingGR)
+			return false;
+
+		var gr = new GlideRecord(sn_apptmnt_booking.AppointmentBookingConstants.SERVICE_CONFIG_TABLE);
+		gr.addQuery(sn_apptmnt_booking.AppointmentBookingConstants.CATALOG_ITEM, appointmentBookingGR.catalog_item);
+		gr.query();
+
+		if (gr.next()){
+			var q = new GlideRecord(sn_walkup.WalkUpConstants.LOCATION_QUEUE_TABLE);
+			q.addQuery('appointment_booking',gr.getUniqueValue());
+			q.addActiveQuery();
+			q.query();
+			if (q.next()){
+				var locationId = q.getUniqueValue();
+				return gs.getProperty('glide.servlet.uri') +
+					'sp?id=walkup_online_checkin' +
+					'&view=appointment' +
+					'&location_id='+locationId +
+					'&table=wu_appointment&sys_id=' +
+					appointmentBookingGR.task
+				;
+			}
+		}
+
+		return false;
+	},
+
+	/**
+	 * determines if the interaction has an active appointment record
+	 * by querying for the relationship. Ignores wu_context.is_appointment.
+	 *
+	 * @param interaction GlideRecord of interaction
+	 * @return boolean TRUE if interaction has an appointment record.
+	 */
+	hasAppointment: function (interaction) {
+		if (!interaction.isValidRecord())
+			return false;
+
+		var count = new GlideAggregate(sn_walkup.WalkUpConstants.APPOINTMENT_TABLE);
+		count.addQuery('active','true');
+		count.addQuery('interaction', interaction.sys_id);
+		count.addAggregate('COUNT');
+		count.query();
+		var incidents = 0;
+		if (count.next())
+			incidents = count.getAggregate('COUNT');
+
+		return (incidents > 0);
+
+	},
+
+	/**
+	 * Get the location queue glide record by catalogId
+	 * @param catalogId sys_id
+	 * @param the location queue glide record, or false
+	 */
+	getLocationQueueByCatalogId: function(catalogId) {
+
+		if (!catalogId)
+			return false;
+
+		var sc = new GlideRecord(sn_apptmnt_booking.AppointmentBookingConstants.SERVICE_CONFIG_TABLE);
+		sc.addQuery('active', 'true');
+		sc.addQuery('catalog_item', catalogId);
+		sc.query();
+		if (sc.next()){
+			var location = new GlideRecord(sn_walkup.WalkUpConstants.LOCATION_QUEUE_TABLE);
+			location.addQuery('active','true');
+			location.addQuery('appointment_booking', sc.sys_id);
+			location.query();
+			if (location.next()) {
+				return location;
+			}
+		}
+		return false;
+	},
+
+
+	/**
+	Compute users estimated wait time based on average wait time on wu_location_queue
+	 * @param location - The sys_id of the walk-up location.
+	 * @param includeQueueLength - Boolean to check if queue length to be included.
+	 * @return estimatedWaitTime
+	*/
+	computeWaitTime: function (location, includeQueueLength) {
+
+		var estimatedWaitTime = 0;
+		var waitTime = 0;
+		var waitTimeInMins = 0;
+		try {
+			var queueLength = this.getQueueLength(location);
+			var locationRec = new GlideRecord('wu_location_queue');
+			locationRec.addActiveQuery();
+			locationRec.get(location);
+			locationRec.query();
+			while (locationRec.next()) {
+				var waitTimeTValue = locationRec.getValue('average_wait_time');
+				if(waitTimeTValue) {
+					var gdt = new GlideDateTime(waitTimeTValue);
+					var waitTimeInSeconds = (gdt.getNumericValue())/1000;
+					waitTimeInMins = Math.round((waitTimeInSeconds)/60);
+
+					if (includeQueueLength || (queueLength === '0'))
+						estimatedWaitTime = waitTimeInMins * queueLength;
+					else
+						estimatedWaitTime = waitTimeInMins;
+				}
+				return estimatedWaitTime;
+			}
+		}
+		catch(e) {
+			gs.error('Walk-up: Error occured while computing estimated wait time. ' + e);
+		}
+
+	},
+
+
+	/**
+	Compute number of outstanding work items for the queue waiting to receive help from technician.
+	 * @param locationId - The sys_id of the walk-up location.
+	*/
+	getQueueLength: function(locationId) {
+		var workItem = new GlideAggregate('awa_work_item');
+		workItem.addQuery('queue', locationId);
+		workItem.addQuery('state', 'queued').addOrCondition('state', 'pending_accept');
+		workItem.addQuery('active', 'true');
+		workItem.addAggregate('COUNT');
+		workItem.query();
+		if (workItem.next())
+			return workItem.getAggregate('COUNT');
+
+		return null;
+	},
+
+	/**
+	Compute waiting time for online experiences - status widget and online checkin experience and accounts for below cases
+	* 1. User has not checked into the queue
+	* 2. User is first in the queue
+	* 3. User has a position > 1 in the queue
+	 * @param locationId - The sys_id of the walk-up location.
+	*/
+	getOnlineWaitTime: function (location, usersPosition) {
+		try {
+			var waitTime = 0;
+			if (usersPosition === 0 )
+				waitTime = this.computeWaitTime(location, true);
+			else if (usersPosition === 1)
+				waitTime = 0;
+			else
+				waitTime = this.computeWaitTime(location, false) * (usersPosition - 1);
+			return waitTime;
+		}
+		catch (e) {
+			gs.error('Walk-up util script - Error occured while computing online wait time. ' + e);
+
+		}
+	},
+
+	/**
+	Check if user is eligible to create an appointment on behalf of someone else
+	 * @param {string} sysId - The sys_id of the walk-up location.
+	 * @param queueId - sys_id from wu_location_queue table
+	 * @return {boolean} - If user is eligible
+	*/
+
+	checkEligibility: function(user, queueId) {
+		try {
+			var locationRec = new GlideRecord('wu_location_queue');
+			locationRec.addActiveQuery();
+			locationRec.get(queueId);
+			locationRec.query();
+			while (locationRec.next()) {
+				var booking_group = locationRec.getValue('eligible_booking_group');
+				if (user.isMemberOf(booking_group)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		catch(e) {
+			gs.error('Online walk-up widget - Error occured while checking for on behalf appointment eligibility. ' + e);
+		}
+	},
+
+
+
+
+
+	/**
+	 * Fetch the current walk-up location's timezone. If it is not a valid schedule then user timezone.
+	 *
+	 * @param {string} sysId - The sys_id of the walk-up location.
+	 * @return {string} tz - The timezone of the walk-up location.
+	 */
+	fetchLocationTimeZone: function(sysId) {
+		try {
+			var locationRecord = new GlideRecord('wu_location_queue');
+			locationRecord.addActiveQuery();
+			locationRecord.get(sysId);
+
+			if (locationRecord.location && locationRecord.location.time_zone)
+				return locationRecord.location.time_zone.toString();
+
+			if (locationRecord.schedule && locationRecord.schedule.time_zone)
+				return locationRecord.schedule.time_zone.toString();
+		}
+		catch(e) {
+			gs.error('Online walk-up widget - Error occured at fetchLocationTimeZone. ' + e);
+		}
+
+		return null;
+	},
+
+	parseContext: function(interactionRecord) {
+		if (!interactionRecord.isValidRecord())
+			return false;
+
+		var result = {};
+
+		var contextTable = interactionRecord.getDisplayValue('context_table');
+		var contextId = interactionRecord.context_document;
+
+		if (!contextTable || !contextId)
+			return false;
+
+		try {
+			var context = new GlideRecord(contextTable);
+			context.addActiveQuery();
+			context.get(contextId);
+			if (context.isValidRecord()) {
+				result.guest_email = context.guest_email;
+				result.guest_name = context.guest_name;
+				result.is_guest = context.is_guest;
+				result.is_online = context.is_online_checkin;
+				result.is_appointment = context.is_appointment;
+				result.reason = context.reason.getDisplayValue();
+				result.reason_description = context.reason_description.getDisplayValue();
+
+				return result;
+			}
+			else
+				return false;
+		}
+		catch(err) {
+			gs.error('sn_walkup.WalkUpUtil: Error in parseContext - ' + err);
+		}
+
+		return false;
+	},
+
+	fetchReasonConfig: function(queueId) {
+		var reasonList = [];
+		if (!queueId)
+			return reasonList;
+
+		try {
+			var reasonsRecord = new GlideRecord('wu_m2m_location_queue_reason');
+			reasonsRecord.addQuery('wu_location_queue', queueId);
+			reasonsRecord.orderBy('order');
+			reasonsRecord.addQuery('wu_reason.active', true);
+			reasonsRecord.query();
+			while(reasonsRecord.next()) {
+				var reasons = {
+					value: reasonsRecord.getValue('wu_reason'),
+					label: reasonsRecord.getDisplayValue('wu_reason'),
+					// PRB1348675: display_text_area should be a boolean
+					display_text_area: !!reasonsRecord.display_text_area
+				};
+				reasonList.push(reasons);
+			}
+		}
+		catch(e) {
+			data.error = true;
+			gs.info('Error occured while fetching reason list.' + e);
+		}
+
+		return reasonList;
+	},
+
+	/**
+	 * Get the current glide ui session timeout of the system.
+	 *
+	 * @return {number} timeout - Half the system session timeout value formatted in milliseconds
+	 */
+	getSessionTimeoutInterval: function() {
+		var MS_CONVERSION = 60000; // Conversion constant to convert minute to milliseconds
+		var sessionTimeout;
+		var timeout;
+
+		var gr = new GlideRecord('sys_properties');
+		gr.get('name', 'glide.ui.session_timeout');
+		sessionTimeout = gr.getValue('value');
+
+		// Format result to be half of the session timeout in milliseconds.
+		timeout = (sessionTimeout * MS_CONVERSION) / 2;
+		return timeout;
+	},
+
+	fetchQueueConfig: function(queueId) {
+		if (!queueId)
+			return false;
+		var config = {};
+		var queueRecord = new GlideRecord('wu_location_queue');
+
+		queueRecord.addActiveQuery();
+		queueRecord.get(queueId);
+
+		if (queueRecord.isValidRecord()) {
+			config.logo = queueRecord.getDisplayValue('logo');
+			config.enableAvatars = queueRecord.getValue('enable_avatars');
+			config.displayTechnician = queueRecord.getValue('display_technician');
+			config.queueDisplayLimit = queueRecord.getValue('queue_display_limit');
+			config.timeOptions = queueRecord.getValue('wait_time_options');
+			config.enableAwayState = queueRecord.getValue('enable_away_state') === '1';
+			config.awayImage = queueRecord.getDisplayValue('away_image');
+			config.awayMessage = queueRecord.getDisplayValue('away_message');
+			config.closedMessage = queueRecord.getDisplayValue('closed_message');
+			config.enableEmployee = queueRecord.getValue('enable_employee_support');
+			config.enableGuest = queueRecord.getValue('enable_external_user_support');
+			config.enableOnlineCheckIn = queueRecord.getValue('enable_online_checkin');
+			config.notificationThreshold = queueRecord.getValue('threshold_notification');
+			config.welcomeMessage = queueRecord.getDisplayValue('welcome_message');
+			config.checkInGreeting = queueRecord.getDisplayValue('check_in_greeting');
+			config.maxSearchResults = queueRecord.getValue('max_search_results');
+			config.searchConfig = queueRecord.getValue('search_config');
+			config.lastCheckIn = queueRecord.getValue('last_checkin');
+			config.lastCheckInMsg = gs.getMessage("Check-ins will end {0} minutes before closing.", config.lastCheckIn);
+			config.queueLogo = queueRecord.getDisplayValue('queue_logo');
+			config.nameConfig = queueRecord.getValue('name_configuration');
+			config.appointmentBooking = queueRecord.getValue('appointment_booking');
+			config.isApptmntEnabled = config.appointmentBooking !== null;
+			config.appointmentCatalogId = queueRecord.appointment_booking.catalog_item.toString();
+			config.locationId = queueRecord.getValue('location');
+			config.isApptOnBehalfEnabled = queueRecord.getValue('enable_appt_booking_on_behalf');
+			config.showWaitTime = queueRecord.getValue('show_wait_time');
+			config.audioConfig = queueRecord.getValue('audio_playback');
+			config.audioFileName = queueRecord.getDisplayValue('audio_file');
+
+			config.isUpgrading = this._hasLegacyFields() && !this._hasBeenMigrated(queueId);
+
+			if (queueRecord.isValidField("enable_badge_notification"))
+				config.isBadgeCheckInEnabled = queueRecord.getValue('enable_badge_notification') === '1';
+			
+			if (queueRecord.isValidField("badge_reason"))
+				config.badgeReason = queueRecord.getValue('badge_reason');
+
+			if (queueRecord.isValidField("badge_reason_description"))
+				config.badgeReasonDescription = queueRecord.getDisplayValue('badge_reason_description');
+			
+			if (config.isUpgrading) {
+				config.enableAwayState = true;
+				config.awayMessage = gs.getMessage('The system is upgrading. Please check back later.');
+			}
+
+			var phoneNumberLabel = queueRecord.getDisplayValue('phone_number_label');
+			var phoneNumber = queueRecord.getDisplayValue('phone_number');
+
+			// Can be phone number or empty string
+			config.phoneNumber = phoneNumber;
+			// Only add a label if there's a phone number and the label exists
+			if (phoneNumber && phoneNumberLabel)
+				config.phoneNumber = phoneNumberLabel + ': ' + phoneNumber;
+
+			config.recordProducer = {};
+			config.recordProducer.sysID = queueRecord.getValue('record_producer');
+			config.recordProducer.name = queueRecord.getDisplayValue('record_producer');
+
+			// If queueLogo is empty then use the logo field
+			config.queueLogo = config.queueLogo ? config.queueLogo : config.logo;
+
+			//Get city location
+			var locationRecord = new GlideRecordSecure('cmn_location');
+			locationRecord.get(config.locationId);
+			if (locationRecord.isValidRecord())
+				config.city = locationRecord.getValue('city');
+
+		}
+		return config;
+	},
+
+	/**
+	 * Performs a Glide Aggregate to find the total count of interactions
+	 * for a given walk-up location of a given state.
+	 *
+	 * @param queueId - sys_id from wu_location_queue table
+	 * @param queueState - string of state value
+	 * @return integer - total count of interactions that fit the query
+	 */
+	fetchInteractionCount: function(locationId, queueState) {
+		var interactionCount = new GlideAggregate('interaction');
+		interactionCount.addQuery('location', locationId);
+		interactionCount.addQuery('type', 'walkup');
+		interactionCount.addQuery('state', queueState);
+		interactionCount.addQuery('active', 'true');
+		interactionCount.addAggregate('COUNT');
+		interactionCount.query();
+
+		if (interactionCount.next())
+			return interactionCount.getAggregate('COUNT');
+
+		return null;
+	},
+
+	/**
+	 * Simple check to see if a walk-up location exists and is active. Will return the location name
+	 * if the walk-up location is valid.
+	 *
+	 * @param {string} sysId - The sys_id of the walk-up location.
+	 */
+	checkLocationExists: function(sysId) {
+		try {
+			var locationRecord = new GlideRecordSecure('wu_location_queue');
+			locationRecord.addActiveQuery();
+			locationRecord.addQuery('sys_id', sysId);
+			locationRecord.query();
+			if (locationRecord.next()) {
+				return locationRecord.getDisplayValue('name');
+			}
+			return '';
+		}
+		catch(e) {
+			gs.error('sn_walkup.WalkUpUtil: Error in checkLocationExists - ' + err);
+		}
+
+		return '';
+	},
+
+	/**
+	 * Fetch the record producer sys_id associated with the location queue
+	 *
+	 * @param queueID {string} sys_id of the walk-up location queue
+	 * @return catalogID {string} sys_id of the record producer associated with the walk-up location
+	 */
+	fetchCatalogID: function(queueID) {
+		var queueRecord = new GlideRecord('wu_location_queue');
+
+		queueRecord.addActiveQuery();
+		queueRecord.addQuery('sys_id', queueID);
+		queueRecord.query();
+
+		if (queueRecord.next() && queueRecord.appointment_booking)
+			return queueRecord.appointment_booking.catalog_item + '';
+
+		return null;
+	},
+
+	/*
+	 * STRY6236386: This method is used to get user name based on name configuration specified for each location.
+	 * We currently have three options implemented.
+	 * PRB1323071: Moved this method from the WalkUpQueue to the WalkUpUtil file
+	 * 
+	 * Valid name config values are 'show_first_name_only' or 'show_last_name_initial'. If nameConfig does not match
+	 * any of those two values then it will default to display the name field on sys_user.
+	 *
+	 * @param {Array}  userSysIds is an array of sys_id's from the sys_user table.
+	 * @param {String} nameConfig is the configuration to format the user names to. 
+	 * @return {Object} mapping of user sys_id's to the formatted name.
+	 */
+	fetchUserNames: function(userSysIds, nameConfig) {
+		var queueConfigs = {};
+		var users = {};
+		var sugr = new GlideRecord('sys_user');
+		var firstName = '';
+		var lastName = '';
+		var nameBuilder = [];
+
+		// Fetch list of users in a single query
+		sugr.addQuery('sys_id', 'IN', userSysIds.join(','));
+		sugr.query();
+
+		if (nameConfig === sn_walkup.WalkUpConstants.NAME_CONFIG.FIRST_NAME) {
+			while(sugr.next()) {
+				users[sugr.getUniqueValue()] = sugr.first_name + '';
+			}
+		} else if (nameConfig === sn_walkup.WalkUpConstants.NAME_CONFIG.LAST_NAME_INITIAL) {
+			while(sugr.next()) {
+				nameBuilder = [];
+				firstName = sugr.first_name + '';
+				lastName = sugr.last_name + '';
+
+				if (firstName)
+					nameBuilder.push(firstName);
+				if (lastName)
+					nameBuilder.push(lastName.substr(0, 1) + '.');
+
+				users[sugr.getUniqueValue()] = nameBuilder.join(' ');
+			}
+		} else  {
+			while(sugr.next()) {
+				users[sugr.getUniqueValue()] = sugr.name + '';
+			}
+		}
+		return users;
+	},
+
+	/**
+	 * Test if wu_location_queue has previously been reparented
+	 * by testing for the existence of a field from awa_queue
+	 */
+	_hasBeenMigrated: function(queueId) {
+		var WALKUP_SERVICE_CHANNEL = '48e395bc3b102300f1612c2b54efc46f';
+
+		var gr = new GlideRecord(sn_walkup.WalkUpConstants.LOCATION_QUEUE_TABLE);
+		if (!gr.isValidField('service_channel'))
+			return false;
+
+		gr.addQuery('service_channel', WALKUP_SERVICE_CHANNEL);
+		gr.query();
+		if (gr.hasNext())
+			return true;
+
+		return false;
+	},
+
+	/**
+	 * Test if the interactions have legacy data
+	 * by testing for the existence of the "queue" field
+	 * which has been removed from the updated 
+	 * interaction schema. Only upgrades should have
+	 * that field
+	 */
+	_hasLegacyFields: function() {
+		var gr = new GlideRecord(sn_walkup.WalkUpConstants.INTERACTION_TABLE);
+		if (gr.isValidField('queue'))
+			return true;
+		return false;
+	},
+
+	type: 'WalkUpUtil'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-18 20:43:21</sys_created_on>
+        <sys_id>9513d6a00729101035cab0027cd30041</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>WalkUpUtil</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sys_script_include_9513d6a00729101035cab0027cd30041</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-06-18 21:42:26</sys_updated_on>
+    </sys_script_include>
+</record_update>

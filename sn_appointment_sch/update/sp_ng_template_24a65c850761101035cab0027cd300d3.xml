@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_ng_template">
+    <sp_ng_template action="INSERT_OR_UPDATE">
+        <id>appt-onlineConfirmationModal</id>
+        <sp_widget display_value="Online Appointment Scheduler Experience">f151899c0725101035cab0027cd30004</sp_widget>
+        <sys_class_name>sp_ng_template</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-20 00:56:35</sys_created_on>
+        <sys_id>24a65c850761101035cab0027cd300d3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>appt-onlineConfirmationModal</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sp_ng_template_24a65c850761101035cab0027cd300d3</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-06-20 00:56:35</sys_updated_on>
+        <template><![CDATA[<div id="confirmation-modal">  <div class="content">    <h1 ng-if="headerMessage" class="h4 description">      <b>{{headerMessage}}</b>    </h1>    <h2 class="h4 description">      {{modalMessage}}    </h2>    <div class="modal-footer">      <div class="button-group">        <button type="button" ng-click="closeModal()" class="btn btn-primary desktop">          {{data.msgs.dialogOk}}        </button>      </div>    </div>  </div></div>]]></template>
+    </sp_ng_template>
+</record_update>

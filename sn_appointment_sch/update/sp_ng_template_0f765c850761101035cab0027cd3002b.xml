@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_ng_template">
+    <sp_ng_template action="INSERT_OR_UPDATE">
+        <id>appt-scheduledHours</id>
+        <sp_widget display_value="Online Appointment Scheduler Experience">f151899c0725101035cab0027cd30004</sp_widget>
+        <sys_class_name>sp_ng_template</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-20 00:55:57</sys_created_on>
+        <sys_id>0f765c850761101035cab0027cd3002b</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>appt-scheduledHours</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sp_ng_template_0f765c850761101035cab0027cd3002b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-06-25 21:48:26</sys_updated_on>
+        <template><![CDATA[<section ng-class="{'location-content': c.data.enableOnlineCheckIn, 'location-content-landscape': !c.data.enableOnlineCheckIn}">  <h4 class="h4 padding-left">    {{data.msgs.aboutLocation}}  </h4>  <div class="schedule-summary padding-right">    <div ng-if="c.location.image" class="image-container padding-left">      <img ng-src="{{c.location.image}}" alt="${Location image}"/>    </div>    <div class="schedule-info padding-left padding-bottom">      <p class="location-description">        {{c.location.description}}      </p>      <p>        <strong ng-if="c.hasSchedule">          {{data.msgs.loungeHours}}        </strong>      </p>      <div role="list" aria-label="${Schedule for the week}">        <div class="schedule-day" ng-if="c.hasSchedule" ng-repeat="(day, scheduleEntry) in c.scheduleSpan" role="listitem">          <div class="schedule-entry">            <div class="day-tag" aria-label="{{scheduleEntry.fullDay}}">           		{{scheduleEntry.abbreviated}}            </div>            <div class="schedule-tag">              <div ng-if="scheduleEntry.list.length > 0" ng-repeat="timeEntry in scheduleEntry.list">                {{timeEntry.start}} ${to} {{timeEntry.end}}              </div>              <div ng-if="scheduleEntry.list.length === 0">                {{data.msgs.closed}}              </div>            </div>          </div>        </div>      </div>      <div>        <br>        <p ng-if="c.hasSchedule && c.data.lastCheckIn > 0">          * {{data.noteScheduleMsg}}        </p>      </div>    </div>  </div></section>]]></template>
+    </sp_ng_template>
+</record_update>

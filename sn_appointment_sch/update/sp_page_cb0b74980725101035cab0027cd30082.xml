@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_page">
+    <sp_page action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <css>section.page {&#13;
+	background-color: $sp-homepage-bg;&#13;
+}&#13;
+</css>
+        <draft>false</draft>
+        <dynamic_title_structure/>
+        <id>appointment_scheduler</id>
+        <internal>false</internal>
+        <public>false</public>
+        <roles/>
+        <short_description>Allow requestors to add themselves to the walk-up queue via online mode.</short_description>
+        <sys_class_name>sp_page</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-17 19:40:15</sys_created_on>
+        <sys_id>cb0b74980725101035cab0027cd30082</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>appointment_scheduler</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sp_page_cb0b74980725101035cab0027cd30082</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-06-17 19:40:35</sys_updated_on>
+        <title>Appontment Scheduler</title>
+    </sp_page>
+    <sys_translated_text action="delete_multiple" query="documentkey=cb0b74980725101035cab0027cd30082"/>
+</record_update>
