@@ -1113,7 +1113,7 @@ span {
 .locationMsg {
   color: #717171;
   size: 14px;
-  max-width: 52px;
+  //max-width: 52px;
   height: 18px;
 }
 
@@ -1495,8 +1495,8 @@ hr {
 	var queueName = '';
 
 	//Configurable widget options for banner messages
-	options.headerMsg = options.header ? options.header : gs.getMessage("Welcome to the walk-up check-in");
-	options.subHeaderMsg = options.sub_header ? options.sub_header : gs.getMessage("Need service? Select a location and reason for visit below to join a walk-up queue.");
+	options.headerMsg = options.header ? options.header : gs.getMessage("Schedule an On-Site or Virtual Appointment");
+	options.subHeaderMsg = options.sub_header ? options.sub_header : gs.getMessage("Need service? Select a location and reason type if visit.");
 	options.message = options.message ? options.message : gs.getMessage("Select a tech lounge below to get started");
 
 	m.aboutLocation = gs.getMessage('About this location');
@@ -1526,7 +1526,7 @@ hr {
 	m.leaveQueueBtn = gs.getMessage('Leave queue');
 	m.leaveQueueHeaderMsg = gs.getMessage('Are you sure you want to leave the queue?');
 	m.leaveQueueInfoMsg = gs.getMessage('You will lose your place in line.');
-	m.locationMsg = gs.getMessage('Location');
+	m.locationMsg = gs.getMessage('Get Started');
 	m.loungeHours = gs.getMessage('This weeks hours of operation:');
 	m.nowServiced = gs.getMessage('A technician is ready to assist you');
 	m.otherfieldMsg = gs.getMessage('Short Description');
@@ -2186,14 +2186,14 @@ hr {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2020-06-17 20:07:44</sys_created_on>
         <sys_id>f151899c0725101035cab0027cd30004</sys_id>
-        <sys_mod_count>241</sys_mod_count>
+        <sys_mod_count>245</sys_mod_count>
         <sys_name>Online Appointment Scheduler Experience</sys_name>
         <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
         <sys_policy/>
         <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
         <sys_update_name>sp_widget_f151899c0725101035cab0027cd30004</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2020-06-29 06:36:18</sys_updated_on>
+        <sys_updated_on>2020-06-29 19:05:28</sys_updated_on>
         <template><![CDATA[<div class="checkin">
     <!--Schedule widget -->
     <div ng-hide="true">
