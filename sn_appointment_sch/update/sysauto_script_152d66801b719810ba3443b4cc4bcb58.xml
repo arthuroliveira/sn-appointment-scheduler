@@ -6,7 +6,7 @@
         <conditional>false</conditional>
         <entered_time/>
         <name>Interaction state change for walk-up</name>
-        <run_as display_value="Arthur Oliveira">b0055e841bfd5810ba3443b4cc4bcb34</run_as>
+        <run_as display_value="">b0055e841bfd5810ba3443b4cc4bcb34</run_as>
         <run_as_tz/>
         <run_dayofmonth>1</run_dayofmonth>
         <run_dayofweek/>

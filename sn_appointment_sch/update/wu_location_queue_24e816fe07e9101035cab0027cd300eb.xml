@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="wu_location_queue">
     <wu_location_queue action="INSERT_OR_UPDATE">
         <active>true</active>
-        <appointment_booking display_value="Indio: Counselor On-Site">b7dbd272072d101035cab0027cd30057</appointment_booking>
+        <appointment_booking display_value="">b7dbd272072d101035cab0027cd30057</appointment_booking>
         <appt_routing_time>2</appt_routing_time>
         <audio_file/>
         <audio_playback>none</audio_playback>
