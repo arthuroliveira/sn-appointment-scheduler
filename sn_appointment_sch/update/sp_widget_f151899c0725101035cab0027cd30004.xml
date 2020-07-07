@@ -1497,7 +1497,7 @@ hr {
 	//Configurable widget options for banner messages
 	options.headerMsg = options.header ? options.header : gs.getMessage("Schedule an On-Site or Virtual Appointment");
 	options.subHeaderMsg = options.sub_header ? options.sub_header : gs.getMessage("Need service? Select a location and reason type if visit.");
-	options.message = options.message ? options.message : gs.getMessage("Select a tech lounge below to get started");
+	options.message = options.message ? options.message : gs.getMessage("Select Location to get started");
 
 	m.aboutLocation = gs.getMessage('About this location');
 	m.agreeModalMsg = gs.getMessage('I still want to leave this queue');
@@ -2186,14 +2186,14 @@ hr {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2020-06-17 20:07:44</sys_created_on>
         <sys_id>f151899c0725101035cab0027cd30004</sys_id>
-        <sys_mod_count>245</sys_mod_count>
+        <sys_mod_count>260</sys_mod_count>
         <sys_name>Online Appointment Scheduler Experience</sys_name>
         <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
         <sys_policy/>
         <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
         <sys_update_name>sp_widget_f151899c0725101035cab0027cd30004</sys_update_name>
-        <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2020-06-29 19:05:28</sys_updated_on>
+        <sys_updated_by>arthur.oliveira</sys_updated_by>
+        <sys_updated_on>2020-06-29 20:03:27</sys_updated_on>
         <template><![CDATA[<div class="checkin">
     <!--Schedule widget -->
     <div ng-hide="true">
@@ -2278,6 +2278,7 @@ hr {
         <!--Employee Check in code-->
         <div class="top-section">
             <div class="left-section" ng-if="c.data.enableOnlineCheckIn || c.data.hasAppointmentBooking">
+                <h1></h1>
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="item" ng-if="c.data.enableOnlineCheckIn" role="tab">
                         <a ng-click="c.toggleCheckInPanel()" ng-class="{'apptmnt-tab': c.checkInPanel}"
@@ -2422,6 +2423,7 @@ hr {
                                 </reason-for-visit-select>
                             </walk-up-appointment>
                         </div>
+
 
                         <div class="selectUser" ng-if="appt_for === 'on_behalf'">
                             <div class="userOnbehalf">

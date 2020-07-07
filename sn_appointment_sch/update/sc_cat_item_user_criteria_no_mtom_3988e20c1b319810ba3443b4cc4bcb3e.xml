@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sc_cat_item_user_criteria_no_mtom">
+    <sc_cat_item_user_criteria_no_mtom action="INSERT_OR_UPDATE">
+        <sc_cat_item display_value="Hemet: Counselor On-Site">9f2ab5fe07a9101035cab0027cd300d8</sc_cat_item>
+        <sys_class_name>sc_cat_item_user_criteria_no_mtom</sys_class_name>
+        <sys_created_by>arthur.oliveira</sys_created_by>
+        <sys_created_on>2020-06-29 19:15:48</sys_created_on>
+        <sys_id>3988e20c1b319810ba3443b4cc4bcb3e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sc_cat_item_user_criteria_no_mtom_3988e20c1b319810ba3443b4cc4bcb3e</sys_update_name>
+        <sys_updated_by>arthur.oliveira</sys_updated_by>
+        <sys_updated_on>2020-06-29 19:15:48</sys_updated_on>
+        <user_criteria display_value="SNC External">66c1b50e730333009508738234f6a7c9</user_criteria>
+    </sc_cat_item_user_criteria_no_mtom>
+</record_update>
