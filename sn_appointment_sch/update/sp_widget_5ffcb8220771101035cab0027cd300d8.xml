@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function AppointmentDetailCtrl() {
+    /* widget controller */
+    var c = this;
+    c.checkIN = checkIN;
+    c.$onInit = function () {
+        formatDate(c.data.appointment.start);
+    };
+
+    function formatDate(start_time) {
+        var apptTimeMoment = moment(start_time, "YYYY-MM-DD H:mm:ss");
+        c.appointmentTime = {
+            week_day: apptTimeMoment.format('dddd'),
+            day: apptTimeMoment.format('D'),
+            month: apptTimeMoment.format('MMM'),
+            month_full: apptTimeMoment.format('MMMM'),
+            time: apptTimeMoment.format('hh:mma'),
+            date_full: apptTimeMoment.format('MMMM D, YYYY'),
+        };
+        console.log(c.appointmentTime);
+    }
+
+    function checkIN(value) {
+        c.server.get({action: 'checkin', value: value}).then(function (response) {
+            c.data = response.data
+        });
+    }
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.appt-detail-wrapper {&#13;
+  background-color: #ECECEC;&#13;
+  margin: 0 -15px;&#13;
+  padding-bottom: 30px;&#13;
+}&#13;
+&#13;
+.title-container {&#13;
+  background-color: $primary-color;&#13;
+  color: #fff;&#13;
+&#13;
+  .title-align {&#13;
+    display: flex;&#13;
+    height: 80px;&#13;
+    align-items: center;&#13;
+  }&#13;
+&#13;
+  h1 {&#13;
+    margin: 0;&#13;
+    font-weight: bold;&#13;
+  }&#13;
+}&#13;
+&#13;
+.appt-detail-content {&#13;
+&#13;
+  margin-top: 30px;&#13;
+}&#13;
+&#13;
+.margin-top {&#13;
+  margin-top: 10px;&#13;
+}&#13;
+&#13;
+.container-box {&#13;
+  background-color: white;&#13;
+  padding: 15px;&#13;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);&#13;
+  display: flex;&#13;
+  justify-content: center;&#13;
+  text-align: center;&#13;
+  color: black;&#13;
+&#13;
+  display: flex;&#13;
+  align-items: center;&#13;
+&#13;
+&#13;
+  &amp;.row1 {&#13;
+    min-height: 400px;&#13;
+  }&#13;
+  &amp;.row3{&#13;
+    min-height: 400px;&#13;
+  }&#13;
+&#13;
+  p {&#13;
+    margin-top: 10px;&#13;
+    color: #6c6c6c;&#13;
+  }&#13;
+&#13;
+  .appointment-wrapper {&#13;
+    display: flex;&#13;
+  }&#13;
+}&#13;
+&#13;
+.appointment-checkin {&#13;
+  display: flex;&#13;
+  flex-direction: column;&#13;
+  width: 75%;&#13;
+  align-items: center;&#13;
+&#13;
+  button {&#13;
+    width: 300px;&#13;
+    font-size: 24px;&#13;
+    font-weight: bold;&#13;
+    border-radius: 30px;&#13;
+    background-color: #2352a3;&#13;
+&#13;
+    &amp;.btn-secondary {&#13;
+      background-color: #ccc;&#13;
+    }&#13;
+  }&#13;
+}&#13;
+&#13;
+#qrcode {&#13;
+  display: flex;&#13;
+  justify-content: center;&#13;
+}&#13;
+&#13;
+.vertical-divider {&#13;
+  border-top: 2px solid #d8d8d8;&#13;
+  margin-top: 15px;&#13;
+  padding-top: 15px;&#13;
+}&#13;
+&#13;
+/* Extra Small Devices, Phones */&#13;
+@media only screen and (max-width: 480px) {&#13;
+&#13;
+  .smaller-gutter {&#13;
+    padding-left: 0;&#13;
+  }&#13;
+}&#13;
+&#13;
+.box-flex {&#13;
+  display: flex;&#13;
+  flex-direction: column;&#13;
+&#13;
+  ul {&#13;
+    text-align: justify;&#13;
+  }&#13;
+}&#13;
+&#13;
+.no-gutter &gt; [class*='col-'] {&#13;
+  padding-right: 0;&#13;
+  padding-left: 0;&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>workforce_appointment_detail</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) { 
+    new QRCode(element.find('#qrcode')[0], "9d6f973d07a1101035cab0027cd3004d");
+
+}]]></link>
+        <name>WorkForce Appointment Detail</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+  var apptTable = "wu_appointment";
+  var apptSysID = $sp.getParameter("sys_id");
+  var apptGr = new GlideRecord(apptTable);
+
+
+
+  if (apptGr.get(apptSysID)) {
+
+
+    if (input && input.action == 'checkin') {
+      apptGr.state = input.value || 100;
+      apptGr.update();
+    }
+
+
+    data.appointment = {
+      start: apptGr.getDisplayValue('window_start'),
+      end: apptGr.getDisplayValue('window_end'),
+      contact: apptGr.getDisplayValue('contact'),
+      state_dv: apptGr.getDisplayValue('state'),
+      state: apptGr.state.toString()
+    };
+
+    var locationGr = new GlideRecord('cmn_location');
+    if (locationGr.get(apptGr.wu_location_queue.location.toString())) {
+
+      data.appointment.location = {
+        dv: apptGr.getDisplayValue('wu_location_queue'),
+        street: locationGr.getDisplayValue('street'),
+        city: locationGr.getDisplayValue('city'),
+        state: locationGr.getDisplayValue('state'),
+        zip: locationGr.getDisplayValue('zip'),
+        latitude: locationGr.getDisplayValue('latitude'),
+        longitude: locationGr.getDisplayValue('longitude')
+      };
+
+    
+
+  }
+
+}
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-07-07 05:52:06</sys_created_on>
+        <sys_id>5ffcb8220771101035cab0027cd300d8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>WorkForce Appointment Detail</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sp_widget_5ffcb8220771101035cab0027cd300d8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-07-07 05:52:06</sys_updated_on>
+        <template><![CDATA[<div class="appt-detail-wrapper">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="title-container">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 title-align">
+                            <h1>${Appointment Details}</h1>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container appt-detail-content">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="container-box row1">
+
+                    <div class="confirmation-code-wrapper">
+                        <div class="confirmation-label">
+                            Confirmation Code
+                        </div>
+                        <div class="confirmation-code">
+                            <div id="qrcode"></div>
+                        </div>
+
+                        <div class="confirmation-addicional-information vertical-divider">
+                            These code will help speed up your check-in process
+                            <p>
+                                Once you arrive at the location press the "I Have Arrived" or present the code to be
+                                scanned at the information desk.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 smaller-gutter">
+                <div class="container-box row1">
+                    <div class="appointment-info-wrapper">
+                        <div class="appointment-info appointment-title">
+                            <div class="appointment-info-day">
+                                {{c.appointmentTime.week_day}}
+                            </div>
+                            <div class="appointment-info-date">
+                                {{c.appointmentTime.date_full}}
+                            </div>
+                            <div class="appointment-info-time">
+                                at {{c.appointmentTime.time}}
+                            </div>
+                        </div>
+
+                        <div class="appointment-location vertical-divider">
+                            <div class="appointment-address">
+                                <div>{{c.data.appointment.location.dv}}</div>
+                                <div>{{c.data.appointment.location.street}}</div>
+                            </div>
+                            <a href="">GET DIRECTIONS</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-top">
+            <div class="col-xs-12">
+                <div class="container-box">
+                    <div class="appointment-checkin">
+                        <div class="appointment-title">
+                            Check-in without coming in
+                        </div>
+                        <p>
+                            For your health and well being, we have remote check-in.
+                            Once you arrive at the location press the "I Have Arrived" to let us know you are here.
+                            We will send a text message when your councelor or workstation is ready.
+                        </p>
+                        <button class="btn btn-primary" ng-show="c.data.appointment.state != 100" ng-click="c.checkIN()">I HAVE ARRIVE</button>
+                        <button class="btn btn-secondary" ng-show="c.data.appointment.state == 100" ng-click="c.checkIN(10)">CHECKED IN</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-top">
+            <div class="col-sm-4">
+                <div class="container-box box-flex row3">
+                    <div class="appointment-title">For your health and safety</div>
+                    <p>Our COVID-19 guidlines for on-site appointments</p>
+                    <ul>
+
+                        <li>All that enter a locations are required to wear a mask</li>
+                        <li>Do not enter if you havve any of the following syptoms, Lorem ipsum</li>
+                        <li>dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</li>
+                        <li>incididunt ut labore et dolore magna aliqua. Lorem ipsum</li>
+                        <li>elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-8 smaller-gutter">
+                <div class="container-box box-flex row3">
+
+                    <div class="appointment-title">Documents Needed to better Serve You</div>
+                    <p>Get the most out of your appoint by bringing the following documents</p>
+
+                    <ul>
+                        <li>Lorem ipsum labore et dolore magna</li>
+                        <li>dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                            dolore magna aliqua.
+                        </li>
+                        <li>
+                            Lorem ipsum elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem
+                            ipsum
+                        </li>
+                        <li>
+                            dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                        </li>
+                        <li>
+                            incididunt ut labore et dolore magna aliqua. Lorem ipsum
+                        </li>
+                        <li>
+                            elit, sed do eiusmod tempor incididunt ut labore et dolore magna labore et dolore magna
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>]]></template>
+    </sp_widget>
+</record_update>
