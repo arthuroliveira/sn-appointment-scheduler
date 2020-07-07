@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_metadata_link">
+    <sys_metadata_link action="INSERT_OR_UPDATE">
+        <directory>update</directory>
+        <documentkey>19bf34a20771101035cab0027cd300e9</documentkey>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="wu_reason">
+    <wu_reason action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <reason>Advising </reason>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-07-07 06:03:02</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>19bf34a20771101035cab0027cd300e9</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-07-07 06:03:02</sys_updated_on>
+    </wu_reason>
+</record_update>
+]]></payload>
+        <sys_class_name>sys_metadata_link</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-07-07 19:04:49</sys_created_on>
+        <sys_id>f2b27be20731101035cab0027cd30004</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Advising </sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sys_metadata_link_f2b27be20731101035cab0027cd30004</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-07-07 19:04:49</sys_updated_on>
+        <tablename>wu_reason</tablename>
+    </sys_metadata_link>
+</record_update>
