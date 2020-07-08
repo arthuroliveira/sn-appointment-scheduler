@@ -51,7 +51,7 @@
         <update_guid_history>5a39f86ee93110109b9a9baa7b764144:-1717956764,4529b86ed2311010d82116ec0ea26b7e:-1685035940</update_guid_history>
     </sys_update_version>
     <sys_metadata_delete action="INSERT_OR_UPDATE">
-        <sys_audit_delete display_value="Appontment Scheduler - Container 1">af493c6e0731101035cab0027cd30061</sys_audit_delete>
+        <sys_audit_delete display_value="">af493c6e0731101035cab0027cd30061</sys_audit_delete>
         <sys_class_name>sys_metadata_delete</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2020-07-07 05:34:40</sys_created_on>

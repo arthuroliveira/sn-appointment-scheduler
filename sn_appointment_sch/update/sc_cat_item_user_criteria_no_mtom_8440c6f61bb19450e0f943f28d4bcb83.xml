@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sc_cat_item_user_criteria_no_mtom">
     <sc_cat_item_user_criteria_no_mtom action="INSERT_OR_UPDATE">
-        <sc_cat_item display_value="Hemet: Counselor Virtual">034b1e32072d101035cab0027cd300f5</sc_cat_item>
+        <sc_cat_item display_value="Indio: Counselor On-Site">d4da3dfe07a9101035cab0027cd300c5</sc_cat_item>
         <sys_class_name>sc_cat_item_user_criteria_no_mtom</sys_class_name>
         <sys_created_by>arthur.oliveira</sys_created_by>
-        <sys_created_on>2020-06-29 19:15:34</sys_created_on>
-        <sys_id>9678220c1b319810ba3443b4cc4bcb91</sys_id>
+        <sys_created_on>2020-07-08 05:23:07</sys_created_on>
+        <sys_id>8440c6f61bb19450e0f943f28d4bcb83</sys_id>
         <sys_mod_count>0</sys_mod_count>
-        <sys_name>Hemet: Counselor Virtual.</sys_name>
+        <sys_name/>
         <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
         <sys_policy/>
         <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
-        <sys_update_name>sc_cat_item_user_criteria_no_mtom_9678220c1b319810ba3443b4cc4bcb91</sys_update_name>
+        <sys_update_name>sc_cat_item_user_criteria_no_mtom_8440c6f61bb19450e0f943f28d4bcb83</sys_update_name>
         <sys_updated_by>arthur.oliveira</sys_updated_by>
-        <sys_updated_on>2020-06-29 19:15:34</sys_updated_on>
+        <sys_updated_on>2020-07-08 05:23:07</sys_updated_on>
         <user_criteria display_value="SNC External">66c1b50e730333009508738234f6a7c9</user_criteria>
     </sc_cat_item_user_criteria_no_mtom>
 </record_update>

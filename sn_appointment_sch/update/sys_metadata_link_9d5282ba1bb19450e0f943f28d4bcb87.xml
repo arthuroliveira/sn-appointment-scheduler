@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_metadata_link">
+    <sys_metadata_link action="INSERT_OR_UPDATE">
+        <directory>update</directory>
+        <documentkey>1bda4ef607e9101035cab0027cd300a7</documentkey>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update sys_domain="global" table="wu_location_queue"&gt;
+    &lt;wu_location_queue action="INSERT_OR_UPDATE"&gt;
+        &lt;active&gt;true&lt;/active&gt;
+        &lt;appointment_booking display_value="Hemet: Counselor Virtual"&gt;1516deba07e9101035cab0027cd3002f&lt;/appointment_booking&gt;
+        &lt;appt_routing_time&gt;2&lt;/appt_routing_time&gt;
+        &lt;audio_file/&gt;
+        &lt;audio_playback&gt;none&lt;/audio_playback&gt;
+        &lt;average_wait_time&gt;1970-01-01 00:00:30&lt;/average_wait_time&gt;
+        &lt;away_image/&gt;
+        &lt;away_message&gt;We are away at the moment. Please check back later.&lt;/away_message&gt;
+        &lt;check_in_greeting&gt;Welcome! Please check in below to add yourself to the queue.&lt;/check_in_greeting&gt;
+        &lt;closed_message&gt;We are closed. Please refer to the hours of operation.&lt;/closed_message&gt;
+        &lt;condition table="interaction"&gt;location=09d79abe07e9101035cab0027cd300fe^short_description=Counselor On-Site^EQ&lt;item display_table="cmn_location" display_value="Hemet: Counselor Virtual" endquery="false" field="location" goto="false" newquery="false" operator="=" or="false" value="09d79abe07e9101035cab0027cd300fe"/&gt;
+            &lt;item endquery="false" field="short_description" goto="false" newquery="false" operator="=" or="false" value="Counselor On-Site"/&gt;
+            &lt;item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/&gt;
+        &lt;/condition&gt;
+        &lt;condition_mode&gt;simple&lt;/condition_mode&gt;
+        &lt;condition_script&gt;&lt;![CDATA[(function executeCondition(/* glide record */ current) {  
+	// customize condition logic here, return true or false  
+	return false;
+})(current);]]&gt;&lt;/condition_script&gt;
+        &lt;description/&gt;
+        &lt;display_technician&gt;true&lt;/display_technician&gt;
+        &lt;eligible_booking_group display_value="Team Development Code Reviewers" name="Team Development Code Reviewers"&gt;cfcbad03d711110050f5edcb9e61038f&lt;/eligible_booking_group&gt;
+        &lt;enable_appt_booking_on_behalf&gt;true&lt;/enable_appt_booking_on_behalf&gt;
+        &lt;enable_avatars&gt;true&lt;/enable_avatars&gt;
+        &lt;enable_away_state&gt;false&lt;/enable_away_state&gt;
+        &lt;enable_employee_support&gt;true&lt;/enable_employee_support&gt;
+        &lt;enable_external_user_support&gt;true&lt;/enable_external_user_support&gt;
+        &lt;enable_online_checkin&gt;false&lt;/enable_online_checkin&gt;
+        &lt;hold_time&gt;5&lt;/hold_time&gt;
+        &lt;initial_agent_response&gt;Thank you for contacting support. I am looking into your question now and will be with you shortly.&lt;/initial_agent_response&gt;
+        &lt;last_checkin&gt;30&lt;/last_checkin&gt;
+        &lt;location display_value="Hemet: Counselor Virtual"&gt;09d79abe07e9101035cab0027cd300fe&lt;/location&gt;
+        &lt;location_image/&gt;
+        &lt;logo/&gt;
+        &lt;max_search_results&gt;5&lt;/max_search_results&gt;
+        &lt;max_wait_time&gt;1970-01-01 00:00:00&lt;/max_wait_time&gt;
+        &lt;name&gt;Hemet: Counselor Virtual&lt;/name&gt;
+        &lt;name_configuration&gt;show_last_name&lt;/name_configuration&gt;
+        &lt;number&gt;QUE00006&lt;/number&gt;
+        &lt;order&gt;100&lt;/order&gt;
+        &lt;phone_number/&gt;
+        &lt;phone_number_label&gt;Contact IT Support&lt;/phone_number_label&gt;
+        &lt;queue_display_limit&gt;5&lt;/queue_display_limit&gt;
+        &lt;queue_logo/&gt;
+        &lt;record_producer display_value="Create Incident"&gt;3f1dd0320a0a0b99000a53f7604a2ef9&lt;/record_producer&gt;
+        &lt;schedule display_value="8-5 weekdays excluding holidays"&gt;090eecae0a0a0b260077e1dfa71da828&lt;/schedule&gt;
+        &lt;search_config display_value="Incident Deflection"&gt;091fa3d3c37221003d2ae219cdba8f0e&lt;/search_config&gt;
+        &lt;service_channel display_value="Walk-up"&gt;48e395bc3b102300f1612c2b54efc46f&lt;/service_channel&gt;
+        &lt;short_description/&gt;
+        &lt;show_wait_time&gt;false&lt;/show_wait_time&gt;
+        &lt;stockroom/&gt;
+        &lt;sys_class_name&gt;wu_location_queue&lt;/sys_class_name&gt;
+        &lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;
+        &lt;sys_created_on&gt;2020-06-25 19:55:23&lt;/sys_created_on&gt;
+        &lt;sys_domain&gt;global&lt;/sys_domain&gt;
+        &lt;sys_id&gt;1bda4ef607e9101035cab0027cd300a7&lt;/sys_id&gt;
+        &lt;sys_mod_count&gt;7&lt;/sys_mod_count&gt;
+        &lt;sys_name&gt;Hemet: Counselor Virtual&lt;/sys_name&gt;
+        &lt;sys_package display_value="Appointment Scheduler" source="sn_appointment_sch"&gt;0334149407e1101035cab0027cd30098&lt;/sys_package&gt;
+        &lt;sys_policy/&gt;
+        &lt;sys_scope display_value="Appointment Scheduler"&gt;0334149407e1101035cab0027cd30098&lt;/sys_scope&gt;
+        &lt;sys_update_name&gt;wu_location_queue_1bda4ef607e9101035cab0027cd300a7&lt;/sys_update_name&gt;
+        &lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;
+        &lt;sys_updated_on&gt;2020-06-25 21:32:11&lt;/sys_updated_on&gt;
+        &lt;target_wait_time/&gt;
+        &lt;threshold_notification&gt;1&lt;/threshold_notification&gt;
+        &lt;use_condition&gt;true&lt;/use_condition&gt;
+        &lt;wait_time_options&gt;2&lt;/wait_time_options&gt;
+        &lt;welcome_message&gt;Welcome to the Tech Lounge&lt;/welcome_message&gt;
+    &lt;/wu_location_queue&gt;
+&lt;/record_update&gt;
+</payload>
+        <sys_class_name>sys_metadata_link</sys_class_name>
+        <sys_created_by>arthur.oliveira</sys_created_by>
+        <sys_created_on>2020-07-08 05:32:12</sys_created_on>
+        <sys_id>9d5282ba1bb19450e0f943f28d4bcb87</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Hemet: Counselor Virtual</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sys_metadata_link_9d5282ba1bb19450e0f943f28d4bcb87</sys_update_name>
+        <sys_updated_by>arthur.oliveira</sys_updated_by>
+        <sys_updated_on>2020-07-08 05:32:12</sys_updated_on>
+        <tablename>wu_location_queue</tablename>
+    </sys_metadata_link>
+</record_update>
