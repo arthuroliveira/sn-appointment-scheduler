@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_metadata_link">
+    <sys_metadata_link action="INSERT_OR_UPDATE">
+        <directory>update</directory>
+        <documentkey>d80c5672072d101035cab0027cd300c2</documentkey>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sn_apptmnt_booking_service_config">
+    <sn_apptmnt_booking_service_config action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <appointment_booking_config display_value="Walk-up Experience">f9bf0db9b3331300eda5a72256a8dc9d</appointment_booking_config>
+        <appointment_duration>60</appointment_duration>
+        <appointments_per_bookable_slot>1</appointments_per_bookable_slot>
+        <availability_table>wu_appointment</availability_table>
+        <average_travel_duration>0</average_travel_duration>
+        <bookable_days>1,2,3,4,5</bookable_days>
+        <bookable_time>09:00-10:00,10:00-11:00,11:00-12:00,12:00-13:00,13:00-14:00,14:00-15:00,15:00-16:00,16:00-17:00</bookable_time>
+        <break_time/>
+        <cancel_by_time/>
+        <catalog_item/>
+        <daily_end_time>17:00</daily_end_time>
+        <daily_start_time>09:00</daily_start_time>
+        <default_timezone>location</default_timezone>
+        <future_bookable_max_days>14</future_bookable_max_days>
+        <holiday_schedule/>
+        <include_daily_break>false</include_daily_break>
+        <lead_time>1970-01-01 04:00:00</lead_time>
+        <location display_value="Location">a63811f7b3584010e0c1a72256a8dc91</location>
+        <mandatory>true</mandatory>
+        <name>Riverside: Counselor Virtual</name>
+        <reminder/>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-25 21:08:41</sys_created_on>
+        <sys_id>d80c5672072d101035cab0027cd300c2</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_updated_by>arthur.oliveira</sys_updated_by>
+        <sys_updated_on>2020-07-07 19:15:53</sys_updated_on>
+        <user_contact display_value="Contact">7a3f12fab3402300eda5a72256a8dc15</user_contact>
+        <work_duration>30</work_duration>
+    </sn_apptmnt_booking_service_config>
+</record_update>
+]]></payload>
+        <sys_class_name>sys_metadata_link</sys_class_name>
+        <sys_created_by>arthur.oliveira</sys_created_by>
+        <sys_created_on>2020-07-08 05:36:38</sys_created_on>
+        <sys_id>465346fa1bb19450e0f943f28d4bcbc7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Riverside: Counselor Virtual</sys_name>
+        <sys_package display_value="Appointment Scheduler" source="sn_appointment_sch">0334149407e1101035cab0027cd30098</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Appointment Scheduler">0334149407e1101035cab0027cd30098</sys_scope>
+        <sys_update_name>sys_metadata_link_465346fa1bb19450e0f943f28d4bcbc7</sys_update_name>
+        <sys_updated_by>arthur.oliveira</sys_updated_by>
+        <sys_updated_on>2020-07-08 05:36:38</sys_updated_on>
+        <tablename>sn_apptmnt_booking_service_config</tablename>
+    </sys_metadata_link>
+</record_update>
